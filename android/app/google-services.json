@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1009929986093",
+    "project_id": "houseconnect-4d021",
+    "storage_bucket": "houseconnect-4d021.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009929986093:android:4dc2193e4ff6bfb2c998a4",
+        "android_client_info": {
+          "package_name": "ualg.ise.andredavid.projeto_final"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSSvFWbndNaChiSGDGGVL5EJfYAg9OtQY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

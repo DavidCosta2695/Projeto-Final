@@ -9,7 +9,7 @@ class MatchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Lógica do Motor de Match (com variáveis em minúscula)
+    
     final propriedadesMatch = propriedades.where((propriedade) {
       return propriedade.type == client.desiredType &&
           propriedade.price <= client.maxBudget;

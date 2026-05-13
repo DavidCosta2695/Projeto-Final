@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
-import 'ecras/lista_clientes.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'ecras/lista_clientes.dart'; 
 
-void main() {
+void main() async {
+  
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const HouseConnectApp());
 }
 
@@ -14,10 +23,11 @@ class HouseConnectApp extends StatelessWidget {
       title: 'HouseConnect',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 254, 78, 78)),
         useMaterial3: true,
       ),
-      home: const ListaClientes(),
+      home: const ClientListPage(),
     );
   }
 }
