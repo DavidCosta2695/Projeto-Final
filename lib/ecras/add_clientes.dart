@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../modelos/cliente.dart';
-import '../data/mod.dart'; 
-import '../data/bd.dart'; 
+import '../data/bd.dart';
 
 class AddClientPage extends StatefulWidget {
   const AddClientPage({super.key});
@@ -12,59 +11,88 @@ class AddClientPage extends StatefulWidget {
 }
 
 class _AddClientPageState extends State<AddClientPage> {
-  final _nameController = TextEditingController();
-  final _budgetController = TextEditingController();
+  final _nomeController = TextEditingController();
+  final _orcamentoMinimoController = TextEditingController();
+  final _orcamentoMaximoController = TextEditingController();
+  final _localizacaoController = TextEditingController();
 
-  
   final FirebaseService _firebaseService = FirebaseService();
 
-  String? _selectedType;
+  String? _tipologiaSelecionada;
+  String? _garagemSelecionada;
+  String? _piscinaSelecionada;
+
   final List<String> _tipologias = ['T0', 'T1', 'T2', 'T3', 'T4', 'T5+'];
+  final List<String> _opcoesSimNao = ['Indiferente', 'Sim', 'Nao'];
 
-  
-  void _saveClient() async {
-    final name = _nameController.text;
-    final type = _selectedType ?? '';
+  void _guardarCliente() async {
+    final nome = _nomeController.text.trim();
+    final tipologia = _tipologiaSelecionada ?? '';
+    final localizacao = _localizacaoController.text.trim();
+    final garagem = _garagemSelecionada ?? 'Indiferente';
+    final piscina = _piscinaSelecionada ?? 'Indiferente';
 
-    final budgetText = _budgetController.text.replaceAll(' ', '');
-    final budget = double.tryParse(budgetText) ?? 0.0;
+    final orcamentoMinimoTexto =
+        _orcamentoMinimoController.text.replaceAll(' ', '');
+    final orcamentoMaximoTexto =
+        _orcamentoMaximoController.text.replaceAll(' ', '');
 
-    if (name.isNotEmpty && type.isNotEmpty && budget > 0) {
-      final novoCliente = Cliente(
-        name: name,
-        desiredType: type,
-        maxBudget: budget,
-      );
+    final orcamentoMinimo =
+        double.tryParse(orcamentoMinimoTexto) ?? 0.0;
+    final orcamentoMaximo =
+        double.tryParse(orcamentoMaximoTexto) ?? 0.0;
 
-      
-      try {
-        // Envia para o Firebase e espera que termine
-        await _firebaseService.guardarCliente(novoCliente);
-
-        // Verifica se o ecrã ainda está aberto antes de voltar atrás
-        if (!mounted) return;
-
-        // Se gravou com sucesso, volta para a lista
-        Navigator.pop(context, true);
-      } catch (e) {
-        // Se a net falhar ou houver erro, avisa o utilizador
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao guardar: $e')),
-        );
-      }
-      
-    } else {
+    if (nome.isEmpty ||
+        tipologia.isEmpty ||
+        localizacao.isEmpty ||
+        orcamentoMinimo <= 0 ||
+        orcamentoMaximo <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, preenche todos os campos corretamente.')),
+        const SnackBar(
+          content: Text('Por favor, preenche todos os campos corretamente.'),
+        ),
+      );
+      return;
+    }
+
+    if (orcamentoMinimo > orcamentoMaximo) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('O orçamento mínimo não pode ser superior ao máximo.'),
+        ),
+      );
+      return;
+    }
+
+    final novoCliente = Cliente(
+      nome: nome,
+      tipologia: tipologia,
+      orcamentoMinimo: orcamentoMinimo,
+      orcamentoMaximo: orcamentoMaximo,
+      localizacao: localizacao,
+      garagem: garagem,
+      piscina: piscina,
+    );
+
+    try {
+      await _firebaseService.guardarCliente(novoCliente);
+
+      if (!mounted) return;
+      Navigator.pop(context, true);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao guardar: $e')),
       );
     }
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _budgetController.dispose();
+    _nomeController.dispose();
+    _orcamentoMinimoController.dispose();
+    _orcamentoMaximoController.dispose();
+    _localizacaoController.dispose();
     super.dispose();
   }
 
@@ -74,48 +102,113 @@ class _AddClientPageState extends State<AddClientPage> {
       appBar: AppBar(
         title: const Text('Adicionar Novo Cliente'),
       ),
-      body: Container(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Nome do Cliente'),
+              controller: _nomeController,
+              decoration: const InputDecoration(
+                labelText: 'Nome do Cliente',
+              ),
             ),
             const SizedBox(height: 16),
-            
+
             DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Tipologia Desejada'),
-              value: _selectedType,
-              items: _tipologias.map((String tipologia) {
+              decoration: const InputDecoration(
+                labelText: 'Tipologia Desejada',
+              ),
+              value: _tipologiaSelecionada,
+              items: _tipologias.map((tipologia) {
                 return DropdownMenuItem<String>(
                   value: tipologia,
                   child: Text(tipologia),
                 );
               }).toList(),
-              onChanged: (String? newValue) {
+              onChanged: (novoValor) {
                 setState(() {
-                  _selectedType = newValue;
+                  _tipologiaSelecionada = novoValor;
                 });
               },
             ),
             const SizedBox(height: 16),
-            
+
             TextField(
-              controller: _budgetController,
+              controller: _localizacaoController,
               decoration: const InputDecoration(
-                labelText: 'Orçamento Máximo',
-                prefixText: '€ ', 
+                labelText: 'Localização',
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            TextField(
+              controller: _orcamentoMinimoController,
+              decoration: const InputDecoration(
+                labelText: 'Orçamento Mínimo',
+                prefixText: '€ ',
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly, 
-                CurrencySpaceFormatter(), 
+                FilteringTextInputFormatter.digitsOnly,
+                CurrencySpaceFormatter(),
               ],
             ),
+            const SizedBox(height: 16),
+
+            TextField(
+              controller: _orcamentoMaximoController,
+              decoration: const InputDecoration(
+                labelText: 'Orçamento Máximo',
+                prefixText: '€ ',
+              ),
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                CurrencySpaceFormatter(),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            DropdownButtonFormField<String>(
+              decoration: const InputDecoration(
+                labelText: 'Garagem',
+              ),
+              value: _garagemSelecionada,
+              items: _opcoesSimNao.map((opcao) {
+                return DropdownMenuItem<String>(
+                  value: opcao,
+                  child: Text(opcao),
+                );
+              }).toList(),
+              onChanged: (novoValor) {
+                setState(() {
+                  _garagemSelecionada = novoValor;
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+
+            DropdownButtonFormField<String>(
+              decoration: const InputDecoration(
+                labelText: 'Piscina',
+              ),
+              value: _piscinaSelecionada,
+              items: _opcoesSimNao.map((opcao) {
+                return DropdownMenuItem<String>(
+                  value: opcao,
+                  child: Text(opcao),
+                );
+              }).toList(),
+              onChanged: (novoValor) {
+                setState(() {
+                  _piscinaSelecionada = novoValor;
+                });
+              },
+            ),
             const SizedBox(height: 32),
+
             ElevatedButton(
-              onPressed: _saveClient,
+              onPressed: _guardarCliente,
               child: const Text('Guardar Cliente'),
             ),
           ],
@@ -135,19 +228,19 @@ class CurrencySpaceFormatter extends TextInputFormatter {
       return newValue;
     }
 
-    final int newTextLength = newValue.text.length;
-    final StringBuffer newText = StringBuffer();
+    final int novoComprimento = newValue.text.length;
+    final StringBuffer novoTexto = StringBuffer();
 
-    for (int i = 0; i < newTextLength; i++) {
-      if (i > 0 && (newTextLength - i) % 3 == 0) {
-        newText.write(' '); 
+    for (int i = 0; i < novoComprimento; i++) {
+      if (i > 0 && (novoComprimento - i) % 3 == 0) {
+        novoTexto.write(' ');
       }
-      newText.write(newValue.text[i]);
+      novoTexto.write(newValue.text[i]);
     }
 
     return TextEditingValue(
-      text: newText.toString(),
-      selection: TextSelection.collapsed(offset: newText.length),
+      text: novoTexto.toString(),
+      selection: TextSelection.collapsed(offset: novoTexto.length),
     );
   }
 }

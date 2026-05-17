@@ -18,15 +18,16 @@ class _ClientListPageState extends State<ClientListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HouseConnect - Clientes', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'HouseConnect - Clientes',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-
       drawer: Drawer(
         child: ListView(
-          padding: EdgeInsets.zero, 
+          padding: EdgeInsets.zero,
           children: [
-            
             DrawerHeader(
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.inversePrimary,
@@ -35,7 +36,6 @@ class _ClientListPageState extends State<ClientListPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  
                   SizedBox(height: 8),
                   Text(
                     'Menu Principal',
@@ -64,46 +64,62 @@ class _ClientListPageState extends State<ClientListPage> {
           ],
         ),
       ),
-      
       body: StreamBuilder<List<Cliente>>(
-        stream: _firebaseService.listarClientes(), 
+        stream: _firebaseService.listarClientes(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Erro ao carregar dados: ${snapshot.error}'));
+            return Center(
+              child: Text('Erro ao carregar dados: ${snapshot.error}'),
+            );
           }
 
           final clientesDaNuvem = snapshot.data ?? [];
-          if (clientesDaNuvem.isEmpty) {
-            return const Center(child: Text('Nenhum cliente registado na nuvem.'));
-          }
 
+          if (clientesDaNuvem.isEmpty) {
+            return const Center(
+              child: Text('Nenhum cliente registado na nuvem.'),
+            );
+          }
 
           return ListView.builder(
             padding: const EdgeInsets.all(8.0),
             itemCount: clientesDaNuvem.length,
             itemBuilder: (context, index) {
               final client = clientesDaNuvem[index];
+
               return Card(
                 elevation: 2,
                 margin: const EdgeInsets.symmetric(vertical: 8.0),
                 child: ListTile(
-                  leading: const CircleAvatar(child: Icon(Icons.person)),
-                  title: Text(client.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text('Procura: ${client.desiredType} • Orçamento: €${client.maxBudget.toStringAsFixed(0)}'),
+                  leading: const CircleAvatar(
+                    child: Icon(Icons.person),
+                  ),
+                  title: Text(
+                    client.nome,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    'Procura: ${client.tipologia} • ${client.localizacao}\n'
+                    'Orçamento: €${client.orcamentoMinimo.toStringAsFixed(0)} - €${client.orcamentoMaximo.toStringAsFixed(0)}\n'
+                    'Garagem: ${client.garagem} • Piscina: ${client.piscina}',
+                  ),
                   trailing: ElevatedButton.icon(
                     icon: const Icon(Icons.auto_awesome),
                     label: const Text('Match'),
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => MatchPage(client: client)),
+                        MaterialPageRoute(
+                          builder: (context) => MatchPage(client: client),
+                        ),
                       );
                     },
                   ),
+                  isThreeLine: true,
                 ),
               );
             },

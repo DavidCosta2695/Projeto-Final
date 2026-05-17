@@ -1,13 +1,28 @@
 class Propriedade {
-  final String title;
-  final String type;
-  final double price;
-  final String location;
+  final double preco;
+  final String tipologia;
+  final String localizacao;
+  final String area;
+  final String garagem;
+  final String piscina;
 
   Propriedade({
-    required this.title,
-    required this.type,
-    required this.price,
-    required this.location,
+    required this.preco,
+    required this.tipologia,
+    required this.localizacao,
+    required this.area,
+    required this.garagem,
+    required this.piscina,
   });
+
+  factory Propriedade.fromMap(Map<String, dynamic> map) {
+    return Propriedade(
+      preco: (map['preco'] ?? 0.0).toDouble(),
+      tipologia: map['tipologia'] ?? '',
+      localizacao: map['localizacao'] ?? '',
+      area: map['area'] ?? '',
+      garagem: map['garagem'] ?? '',
+      piscina: map['piscina'] ?? '',
+    );
+  }
 }

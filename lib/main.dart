@@ -22,12 +22,21 @@ class HouseConnectApp extends StatelessWidget {
     return MaterialApp(
       title: 'HouseConnect',
       debugShowCheckedModeBanner: false,
+
       theme: ThemeData(
-        
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 17, 17, 17)),
-        useMaterial3: true,
-      ),
-      home: const ClientListPage(),
-    );
+        brightness: Brightness.dark,
+
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: const Color(0xFFC8A46B),
+      brightness: Brightness.dark,
+    ),
+
+    scaffoldBackgroundColor: const Color(0xFF111111),
+
+    useMaterial3: true,
+  ),
+
+  home: const ClientListPage(),
+);
   }
 }
