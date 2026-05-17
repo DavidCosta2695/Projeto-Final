@@ -4,6 +4,7 @@ import '../data/bd.dart';
 import 'add_propriedade.dart';
 import 'lista_clientes.dart';
 import 'dart:convert';
+import 'configuracoes.dart';
 
 class PropertyListPage extends StatefulWidget {
   const PropertyListPage({super.key});
@@ -63,6 +64,18 @@ class _PropertyListPageState extends State<PropertyListPage> {
               title: const Text('Gestão de Imóveis'),
               onTap: () {
                 Navigator.pop(context);
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Configurações'),
+              onTap: () {
+                Navigator.pop(context); // Fecha a gaveta
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ConfiguracoesPage()),
+                );
               },
             ),
           ],

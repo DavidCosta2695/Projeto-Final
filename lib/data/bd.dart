@@ -21,13 +21,13 @@ class FirebaseService {
 
   Stream<List<Cliente>> listarClientes() {
     return _db.collection('clientes').snapshots().map((snapshot) {
-      // Para cada documento que o Firebase encontrar, transformamos em Cliente
+      
       return snapshot.docs.map((doc) => Cliente.fromMap(doc.data())).toList();
     });
   }
   Future<void> guardarPropriedade(Propriedade propriedade) async {
     try {
-      // Cria uma coleção nova chamada 'propriedades' automaticamente
+      
       await _db.collection('propriedades').add(propriedade.toMap());
       print("Propriedade guardada com sucesso no Firebase!");
     } catch (e) {
@@ -40,4 +40,20 @@ class FirebaseService {
       return snapshot.docs.map((doc) => Propriedade.fromMap(doc.data())).toList();
     });
   }
+  Future<void> atualizarPerfilUtilizador(String uid, String nome, String? imagemBase64) async {
+    await _db.collection('utilizadores').doc(uid).set({
+      'nome': nome,
+      'imagemBase64': imagemBase64,
+    }, SetOptions(merge: true)); 
+  }
+
+  
+  Future<Map<String, dynamic>?> obterPerfilUtilizador(String uid) async {
+    final doc = await _db.collection('utilizadores').doc(uid).get();
+    if (doc.exists) {
+      return doc.data();
+    }
+    return null; 
+  }
 }
+

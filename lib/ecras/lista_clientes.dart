@@ -4,6 +4,7 @@ import '../data/bd.dart';
 import 'pag_match.dart';
 import 'add_clientes.dart';
 import 'lista_propriedades.dart';
+import 'configuracoes.dart';
 
 class ClientListPage extends StatefulWidget {
   const ClientListPage({super.key});
@@ -64,6 +65,18 @@ class _ClientListPageState extends State<ClientListPage> {
                   MaterialPageRoute(
                     builder: (context) => const PropertyListPage(),
                   ),
+                );
+              },
+            ),
+        const Divider(), // Cria um risco horizontal para separar visualmente
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Configurações'),
+              onTap: () {
+                Navigator.pop(context); // Fecha a gaveta
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ConfiguracoesPage()),
                 );
               },
             ),
