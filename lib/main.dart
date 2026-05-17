@@ -24,7 +24,7 @@ class HouseConnectApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 254, 78, 78)),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 17, 17, 17)),
         useMaterial3: true,
       ),
       home: const ClientListPage(),
