@@ -4,6 +4,7 @@ class Propriedade {
   final String localizacao;
   final String garagem;
   final String piscina;
+  final String? imagemBase64; 
 
   Propriedade({
     required this.preco,
@@ -11,6 +12,7 @@ class Propriedade {
     required this.localizacao,
     required this.garagem,
     required this.piscina,
+    this.imagemBase64,
   });
 
   Map<String, dynamic> toMap() {
@@ -20,6 +22,7 @@ class Propriedade {
       'localizacao': localizacao,
       'garagem': garagem,
       'piscina': piscina,
+      'imagemBase64': imagemBase64,
     };
   }
 
@@ -30,6 +33,7 @@ class Propriedade {
       localizacao: map['localizacao'] ?? '',
       garagem: map['garagem'] ?? '',
       piscina: map['piscina'] ?? '',
+      imagemBase64: map['imagemBase64'],
     );
   }
 }

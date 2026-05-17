@@ -3,6 +3,7 @@ import '../modelos/propriedade.dart';
 import '../data/bd.dart';
 import 'add_propriedade.dart';
 import 'lista_clientes.dart';
+import 'dart:convert';
 
 class PropertyListPage extends StatefulWidget {
   const PropertyListPage({super.key});
@@ -61,7 +62,6 @@ class _PropertyListPageState extends State<PropertyListPage> {
               leading: const Icon(Icons.house),
               title: const Text('Gestão de Imóveis'),
               onTap: () {
-                
                 Navigator.pop(context);
               },
             ),
@@ -90,6 +90,7 @@ class _PropertyListPageState extends State<PropertyListPage> {
             );
           }
 
+          
           return ListView.builder(
             padding: const EdgeInsets.all(8.0),
             itemCount: listaDeImoveis.length,
@@ -100,8 +101,17 @@ class _PropertyListPageState extends State<PropertyListPage> {
                 elevation: 2,
                 margin: const EdgeInsets.symmetric(vertical: 8.0),
                 child: ListTile(
-                  leading: const CircleAvatar(
-                    child: Icon(Icons.house),
+                  // O leading (a imagem)
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: imovel.imagemBase64 != null && imovel.imagemBase64!.isNotEmpty
+                        ? Image.memory(
+                            base64Decode(imovel.imagemBase64!),
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          )
+                        : const CircleAvatar(child: Icon(Icons.house)),
                   ),
                   title: Text(
                     'Imóvel ${index + 1} - ${imovel.tipologia}',
@@ -120,11 +130,11 @@ class _PropertyListPageState extends State<PropertyListPage> {
                     ),
                   ),
                   isThreeLine: true,
-                ),
-              );
+                ), 
+              ); 
             },
-          );
-        },
+          ); 
+        }, 
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.push(

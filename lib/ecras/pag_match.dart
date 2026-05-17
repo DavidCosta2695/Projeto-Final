@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../modelos/cliente.dart';
 import '../modelos/propriedade.dart';
 import '../data/bd.dart';
+import 'dart:convert'; 
 
 class MatchPage extends StatefulWidget {
   final Cliente client;
@@ -23,7 +24,7 @@ class _MatchPageState extends State<MatchPage> {
       ),
       body: Column(
         children: [
-          
+          // Cabeçalho com o perfil do cliente
           Container(
             padding: const EdgeInsets.all(16.0),
             color: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -47,12 +48,11 @@ class _MatchPageState extends State<MatchPage> {
           ),
           const Divider(height: 1),
           
-          // Lista de Matches 
+          
           Expanded(
             child: StreamBuilder<List<Propriedade>>(
               stream: _firebaseService.listarPropriedades(),
               builder: (context, snapshot) {
-                
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
@@ -75,14 +75,12 @@ class _MatchPageState extends State<MatchPage> {
                   return tipologiaOk && precoOk && localizacaoOk && garagemOk && piscinaOk;
                 }).toList();
 
-                
                 if (propriedadesMatch.isEmpty) {
                   return const Center(
                     child: Text('Nenhum imóvel encontrado na nuvem com este perfil.'),
                   );
                 }
 
-                // Se houver matches, desenha a lista
                 return ListView.builder(
                   padding: const EdgeInsets.all(8.0),
                   itemCount: propriedadesMatch.length,
@@ -90,8 +88,21 @@ class _MatchPageState extends State<MatchPage> {
                     final propriedade = propriedadesMatch[index];
 
                     return Card(
+                      elevation: 2,
+                      margin: const EdgeInsets.symmetric(vertical: 8.0),
                       child: ListTile(
-                        leading: const Icon(Icons.house, size: 40),
+                        
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: propriedade.imagemBase64 != null && propriedade.imagemBase64!.isNotEmpty
+                              ? Image.memory(
+                                  base64Decode(propriedade.imagemBase64!),
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                )
+                              : const CircleAvatar(child: Icon(Icons.house)),
+                        ),
                         title: Text(
                           'Imóvel ${index + 1} - ${propriedade.tipologia}',
                           style: const TextStyle(fontWeight: FontWeight.bold),
