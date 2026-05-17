@@ -171,7 +171,7 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
 
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(labelText: 'Tipologia do Imóvel'),
-              value: _tipologiaSelecionada,
+              initialValue: _tipologiaSelecionada,
               items: _tipologias.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
               onChanged: (v) => setState(() => _tipologiaSelecionada = v),
             ),
@@ -185,7 +185,7 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
 
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(labelText: 'Possui Garagem?'),
-              value: _garagemSelecionada,
+              initialValue: _garagemSelecionada,
               items: _opcoesSimNao.map((o) => DropdownMenuItem(value: o, child: Text(o))).toList(),
               onChanged: (v) => setState(() => _garagemSelecionada = v),
             ),
@@ -193,7 +193,7 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
 
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(labelText: 'Possui Piscina?'),
-              value: _piscinaSelecionada,
+              initialValue: _piscinaSelecionada,
               items: _opcoesSimNao.map((o) => DropdownMenuItem(value: o, child: Text(o))).toList(),
               onChanged: (v) => setState(() => _piscinaSelecionada = v),
             ),
