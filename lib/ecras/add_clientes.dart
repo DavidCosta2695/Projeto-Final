@@ -118,7 +118,7 @@ class _AddClientPageState extends State<AddClientPage> {
               decoration: const InputDecoration(
                 labelText: 'Tipologia Desejada',
               ),
-              value: _tipologiaSelecionada,
+              initialValue: _tipologiaSelecionada,
               items: _tipologias.map((tipologia) {
                 return DropdownMenuItem<String>(
                   value: tipologia,
@@ -173,7 +173,7 @@ class _AddClientPageState extends State<AddClientPage> {
               decoration: const InputDecoration(
                 labelText: 'Garagem',
               ),
-              value: _garagemSelecionada,
+              initialValue: _garagemSelecionada,
               items: _opcoesSimNao.map((opcao) {
                 return DropdownMenuItem<String>(
                   value: opcao,
@@ -192,7 +192,7 @@ class _AddClientPageState extends State<AddClientPage> {
               decoration: const InputDecoration(
                 labelText: 'Piscina',
               ),
-              value: _piscinaSelecionada,
+              initialValue: _piscinaSelecionada,
               items: _opcoesSimNao.map((opcao) {
                 return DropdownMenuItem<String>(
                   value: opcao,

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import '../modelos/cliente.dart';
+import '../modelos/propriedade.dart';
 import '../data/bd.dart';
-import 'pag_match.dart';
-import 'add_clientes.dart';
-import 'lista_propriedades.dart';
+import 'add_propriedade.dart';
+import 'lista_clientes.dart';
+import 'dart:convert';
 
-class ClientListPage extends StatefulWidget {
-  const ClientListPage({super.key});
+class PropertyListPage extends StatefulWidget {
+  const PropertyListPage({super.key});
 
   @override
-  State<ClientListPage> createState() => _ClientListPageState();
+  State<PropertyListPage> createState() => _PropertyListPageState();
 }
 
-class _ClientListPageState extends State<ClientListPage> {
+class _PropertyListPageState extends State<PropertyListPage> {
   final FirebaseService _firebaseService = FirebaseService();
 
   @override
@@ -20,11 +20,12 @@ class _ClientListPageState extends State<ClientListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'HouseConnect - Clientes',
+          'HouseConnect - Imóveis',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
+      // --- Menu Lateral (Drawer) para navegação ---
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -49,29 +50,27 @@ class _ClientListPageState extends State<ClientListPage> {
               leading: const Icon(Icons.people),
               title: const Text('Gestão de Clientes'),
               onTap: () {
+                // Fecha o menu e muda para o ecrã de clientes
                 Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ClientListPage()),
+                );
               },
             ),
             ListTile(
               leading: const Icon(Icons.house),
               title: const Text('Gestão de Imóveis'),
               onTap: () {
-                
                 Navigator.pop(context);
-                
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const PropertyListPage(),
-                  ),
-                );
               },
             ),
           ],
         ),
       ),
-      body: StreamBuilder<List<Cliente>>(
-        stream: _firebaseService.listarClientes(),
+      // --- Fim do Drawer ---
+      body: StreamBuilder<List<Propriedade>>(
+        stream: _firebaseService.listarPropriedades(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -79,63 +78,68 @@ class _ClientListPageState extends State<ClientListPage> {
 
           if (snapshot.hasError) {
             return Center(
-              child: Text('Erro ao carregar dados: ${snapshot.error}'),
+              child: Text('Erro ao carregar imóveis: ${snapshot.error}'),
             );
           }
 
-          final clientesDaNuvem = snapshot.data ?? [];
+          final listaDeImoveis = snapshot.data ?? [];
 
-          if (clientesDaNuvem.isEmpty) {
+          if (listaDeImoveis.isEmpty) {
             return const Center(
-              child: Text('Nenhum cliente registado na nuvem.'),
+              child: Text('Nenhum imóvel registado na nuvem.'),
             );
           }
 
+          
           return ListView.builder(
             padding: const EdgeInsets.all(8.0),
-            itemCount: clientesDaNuvem.length,
+            itemCount: listaDeImoveis.length,
             itemBuilder: (context, index) {
-              final client = clientesDaNuvem[index];
+              final imovel = listaDeImoveis[index];
 
               return Card(
                 elevation: 2,
                 margin: const EdgeInsets.symmetric(vertical: 8.0),
                 child: ListTile(
-                  leading: const CircleAvatar(
-                    child: Icon(Icons.person),
+                  // O leading (a imagem)
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: imovel.imagemBase64 != null && imovel.imagemBase64!.isNotEmpty
+                        ? Image.memory(
+                            base64Decode(imovel.imagemBase64!),
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          )
+                        : const CircleAvatar(child: Icon(Icons.house)),
                   ),
                   title: Text(
-                    client.nome,
+                    'Imóvel ${index + 1} - ${imovel.tipologia}',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    'Procura: ${client.tipologia} • ${client.localizacao}\n'
-                    'Orçamento: €${client.orcamentoMinimo.toStringAsFixed(0)} - €${client.orcamentoMaximo.toStringAsFixed(0)}\n'
-                    'Garagem: ${client.garagem} • Piscina: ${client.piscina}',
+                    '${imovel.localizacao}\n'
+                    'Garagem: ${imovel.garagem} • Piscina: ${imovel.piscina}',
                   ),
-                  trailing: ElevatedButton.icon(
-                    icon: const Icon(Icons.auto_awesome),
-                    label: const Text('Match'),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MatchPage(client: client),
-                        ),
-                      );
-                    },
+                  trailing: Text(
+                    '€ ${imovel.preco.toStringAsFixed(0)}',
+                    style: const TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                   isThreeLine: true,
-                ),
-              );
+                ), 
+              ); 
             },
-          );
-        },
+          ); 
+        }, 
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const AddClientPage()),
+          MaterialPageRoute(builder: (context) => const AddPropertyPage()),
         ),
         child: const Icon(Icons.add),
       ),
