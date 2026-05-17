@@ -29,7 +29,6 @@ class AuthService {
     await GoogleSignIn().signOut();
     await _auth.signOut();
   }
-
-  // UTILIZADOR ATUAL
+  
   User? get currentUser => _auth.currentUser;
 }

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'ecras/lista_clientes.dart'; 
+
+import 'ecras/lista_clientes.dart';
+import 'ecras/login.dart';
+import 'servicos/auth_servico.dart';
 
 void main() async {
-  
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -19,24 +21,29 @@ class HouseConnectApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = AuthService();
+
     return MaterialApp(
       title: 'HouseConnect',
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData(
         brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFC8A46B),
+          brightness: Brightness.dark,
+        ),
+        scaffoldBackgroundColor: const Color(0xFF111111),
+        useMaterial3: true,
+      ),
 
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFFC8A46B),
-      brightness: Brightness.dark,
-    ),
+      // ✅ DECISÃO LOGIN vs APP
+      initialRoute: auth.currentUser == null ? '/login' : '/home',
 
-    scaffoldBackgroundColor: const Color(0xFF111111),
-
-    useMaterial3: true,
-  ),
-
-  home: const ClientListPage(),
-);
+      routes: {
+        '/login': (context) => const LoginPage(),
+        '/home': (context) => const ClientListPage(),
+      },
+    );
   }
 }
