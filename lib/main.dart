@@ -37,7 +37,6 @@ class HouseConnectApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      // ✅ DECISÃO LOGIN vs APP
       initialRoute: auth.currentUser == null ? '/login' : '/home',
 
       routes: {
