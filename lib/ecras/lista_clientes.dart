@@ -26,54 +26,48 @@ class _ClientListPageState extends State<ClientListPage> {
         ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      drawer: Drawer(
+drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.inversePrimary,
-              ),
+              decoration: BoxDecoration(color: Theme.of(context).colorScheme.inversePrimary),
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  SizedBox(height: 8),
-                  Text(
-                    'Menu Principal',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+                  Text('HouseConnect', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                  Text('Menu de Navegação', style: TextStyle(fontSize: 14, color: Colors.grey)),
                 ],
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.people),
-              title: const Text('Gestão de Clientes'),
+              leading: const Icon(Icons.dashboard),
+              title: const Text('Início / Dashboard'),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.pushReplacementNamed(context, '/home'); // Vai para o dashboard
               },
+            ),
+            ListTile(
+              leading: const Icon(Icons.people, color: Color(0xFFC8A46B)),
+              title: const Text('Gestão de Clientes'),
+              onTap: () => Navigator.pop(context), // Já está aqui, só fecha
             ),
             ListTile(
               leading: const Icon(Icons.house),
               title: const Text('Gestão de Imóveis'),
               onTap: () {
-                
                 Navigator.pop(context);
-                
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const PropertyListPage(),
-                  ),
-                );
+                Navigator.pushReplacementNamed(context, '/imoveis');
               },
             ),
-        const Divider(), // Cria um risco horizontal para separar visualmente
+            const Divider(),
             ListTile(
               leading: const Icon(Icons.settings),
               title: const Text('Configurações'),
               onTap: () {
-                Navigator.pop(context); // Fecha a gaveta
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ConfiguracoesPage()),

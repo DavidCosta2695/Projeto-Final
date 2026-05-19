@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-
 import 'ecras/lista_clientes.dart';
 import 'ecras/login.dart';
 import 'servicos/auth_servico.dart';
+import 'ecras/dashboard.dart';
+import 'ecras/lista_clientes.dart';
+import 'ecras/lista_propriedades.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +43,9 @@ class HouseConnectApp extends StatelessWidget {
 
       routes: {
         '/login': (context) => const LoginPage(),
-        '/home': (context) => const ClientListPage(),
+        '/home': (context) => const DashboardPage(),        
+        '/clientes': (context) => const ClientListPage(),   
+        '/imoveis': (context) => const PropertyListPage(), 
       },
     );
   }
