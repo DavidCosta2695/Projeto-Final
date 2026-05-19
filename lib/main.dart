@@ -5,7 +5,6 @@ import 'ecras/lista_clientes.dart';
 import 'ecras/login.dart';
 import 'servicos/auth_servico.dart';
 import 'ecras/dashboard.dart';
-import 'ecras/lista_clientes.dart';
 import 'ecras/lista_propriedades.dart';
 
 void main() async {

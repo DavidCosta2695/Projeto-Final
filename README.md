@@ -1,43 +1,49 @@
-# 🏠 HouseConnect - Gestor e Matcher Imobiliário
+# 🏠 HouseConnect
 
-## 📖 Descrição do Projeto
-O **HouseConnect** é uma aplicação móvel desenvolvida em Flutter para Android, concebida para simplificar a gestão de carteira de consultores imobiliários. A aplicação resolve o problema do cruzamento manual de dados entre a procura e a oferta. 
+## 📖 Sobre o Projeto
+O **HouseConnect** é uma aplicação móvel profissional desenvolvida em Flutter, concebida para revolucionar o dia a dia dos consultores imobiliários. 
 
-O objetivo principal é permitir que o consultor registe tanto as necessidades específicas de um comprador como as características dos imóveis que tem para venda, permitindo que o software faça o "match" automático. Além disso, funciona como um histórico de interações, garantindo que nenhuma oportunidade de negócio se perca por falta de acompanhamento.
-
-## 👥 Público-Alvo
-* **Consultores Imobiliários:** Profissionais que necessitam de organizar os seus contactos e imóveis de forma rápida e eficiente.
-* **Agentes de Angariação:** Profissionais focados em encontrar o comprador ideal para propriedades recém-angariadas.
+O sistema resolve um dos maiores problemas das agências imobiliárias: o cruzamento manual de dados entre a procura (clientes) e a oferta (imóveis em carteira). Através de um algoritmo de *matching* inteligente e de uma base de dados sincronizada na nuvem, o consultor consegue, em segundos, encontrar a casa perfeita para o cliente perfeito.
 
 ## ✨ Funcionalidades Principais
-A aplicação está estruturada em torno de três pilares fundamentais:
 
-1.  **Gestão de Clientes (Procura):**
-    * Registo de dados pessoais (Primeiro e último nome, contacto telefónico), etc.
-    * Definição de perfil de procura: Tipologia (T2, T3, etc.), Comodidades (piscina, varanda, casa de banho privada) e outras características chave.
-2.  **Gestão de Imóveis (Oferta):**
-    * Inserção de imóveis disponíveis para venda ou recém-angariados.
-    * Catalogação detalhada baseada nos mesmos critérios de filtragem dos clientes.
-3.  **Algoritmo de Matching Inteligente:**
-    * Cruzamento automático de dados: ao selecionar um cliente, o sistema apresenta instantaneamente os imóveis que cumprem os requisitos inseridos.
-4.  **Base de Dados de Contactos:**
-    * Registo cronológico de quando o cliente contactou o consultor, permitindo uma gestão eficaz do funil de vendas.
+* 🔐 **Autenticação Segura:** Login e Registo suportados por Email/Password (com verificação obrigatória de email) e integração nativa com **Google Sign-In**.
+* 📊 **Dashboard Dinâmico:** Um painel de controlo em tempo real que exibe os totais do negócio e gráficos de barras com a distribuição de procura e oferta por tipologia.
+* 👥 **Gestão de Clientes (CRM):**
+  * Criação, edição e remoção de clientes.
+  * Avatares automáticos e apresentação de dados com *Chips* visuais (Material Design).
+  * Sistema de filtros avançados em tempo real (Slider de Orçamento, Tipologia, Comodidades).
+* 🏠 **Gestão de Imóveis:**
+  * Registo completo de propriedades com captura de fotografia (Câmara ou Galeria) convertida em formato Base64.
+  * Design premium em formato "Cartão" com ecrãs de detalhe que deslizam suavemente (Modal Bottom Sheets).
+* 🎯 **Algoritmo de Matching:** Cruzamento automático e instantâneo. A app avalia o orçamento do cliente, localização, tipologia, garagem e piscina, sugerindo apenas os imóveis 100% compatíveis.
+* ⚙️ **Gestão de Perfil:** Personalização da conta do consultor (Nome, Foto de Perfil customizada e número de Telemóvel).
 
 ## 💻 Tecnologias Utilizadas
-* **Framework:** [Flutter](https://flutter.dev/)
+
+A aplicação foi construída utilizando as melhores práticas e pacotes do ecossistema mobile moderno:
+* **Framework:** [Flutter](https://flutter.dev/) (Suporte multiplataforma)
 * **Linguagem:** [Dart](https://dart.dev/)
-* **Base de Dados:** SQLite (para armazenamento local) ou Firebase Firestore (para sincronização em nuvem).
-* **Design:** Material Design 3.
+* **Base de Dados (BaaS):** [Firebase Cloud Firestore](https://firebase.google.com/docs/firestore) (NoSQL e sincronização em tempo real).
+* **Autenticação:** Firebase Authentication + Google OAuth2.
+* **Formatadores:** `intl` para formatação nativa de moeda (Euros).
+* **Media:** `image_picker` para acesso nativo à câmara e galeria de fotos.
+* **UI/UX:** Material Design 3, *RangeSliders*, *ChoiceChips* e navegação fluida por *Drawers*.
 
-## 🗓️ Cronograma Simplificado
-* **1:** Configuração do ambiente, desenho da arquitetura da base de dados e criação dos modelos (Cliente e Imóvel).
-* **2:** Desenvolvimento das interfaces de utilizador (UI) para registo de clientes e imóveis.
-* **3:** Implementação da lógica de persistência de dados (CRUD) e registo de contactos.
-* **4:** Desenvolvimento do motor de *matching* e filtros de pesquisa.
-* **5:** Testes de integração, correção de bugs e finalização da documentação.
+## 📱 Capturas de Ecrã / UX Highlights
 
-## ⚠️ Desafios Técnicos Previstos
-* **Lógica de Filtragem:** Criar um algoritmo de pesquisa eficiente que consiga lidar com múltiplos critérios opcionais (ex: um cliente que aceita T2 ou T3, mas exige obrigatoriamente piscina).
-* **Gestão de Estado:** Garantir que, ao adicionar um novo imóvel, a lista de matches de um cliente seja atualizada de forma fluida.
-* **Persistência de Datas:** Manipular corretamente os formatos de data e hora para o histórico de contactos, garantindo que a ordenação cronológica seja precisa.
-* **User Experience (UX):** Tornar o formulário de características do imóvel intuitivo, evitando que o excesso de opções torne a app complexa de utilizar.
+
+## 🚀 Como Executar o Projeto
+
+1. Certifica-te que tens o [Flutter SDK](https://docs.flutter.dev/get-started/install) instalado na tua máquina.
+2. Clonar este repositório:
+   git clone [https://github.com/DavidCosta2695/Projeto-Final.git]
+
+<table>
+  <tr>
+    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\login.jpg" width="200"/></td>
+    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\Dashboard.jpg" width="200"/></td>
+    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\Clientes.jpg" width="200"/></td>
+    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\Filtragem.jpg" width="200"/></td>
+  </tr>
+</table>
