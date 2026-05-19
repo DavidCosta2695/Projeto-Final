@@ -33,7 +33,7 @@ class HouseConnectApp extends StatelessWidget {
           seedColor: const Color(0xFFC8A46B),
           brightness: Brightness.dark,
         ),
-        scaffoldBackgroundColor: const Color(0xFF111111),
+        scaffoldBackgroundColor: const Color.fromARGB(255, 27, 26, 26),
         useMaterial3: true,
       ),
 

@@ -3,6 +3,14 @@ import '../modelos/cliente.dart';
 import '../modelos/propriedade.dart';
 import '../data/bd.dart';
 import 'dart:convert'; 
+import 'package:intl/intl.dart';
+
+
+final formatter = NumberFormat.currency(
+  locale: 'pt_PT',
+  symbol: '€ ',
+  decimalDigits: 0,
+);
 
 class MatchPage extends StatefulWidget {
   final Cliente client;
@@ -35,7 +43,7 @@ class _MatchPageState extends State<MatchPage> {
                 Expanded(
                   child: Text(
                     'A procurar imóveis tipo ${widget.client.tipologia} em ${widget.client.localizacao}\n'
-                    'Orçamento: €${widget.client.orcamentoMinimo.toStringAsFixed(0)} - €${widget.client.orcamentoMaximo.toStringAsFixed(0)}\n'
+                    'Orçamento: ${formatter.format(widget.client.orcamentoMinimo)} - ${formatter.format(widget.client.orcamentoMaximo)}\n'
                     'Garagem: ${widget.client.garagem} • Piscina: ${widget.client.piscina}',
                     style: const TextStyle(
                       fontSize: 16,
@@ -112,7 +120,7 @@ class _MatchPageState extends State<MatchPage> {
                           'Garagem: ${propriedade.garagem} • Piscina: ${propriedade.piscina}',
                         ),
                         trailing: Text(
-                          '€${propriedade.preco.toStringAsFixed(0)}',
+                          formatter.format(propriedade.preco),
                           style: const TextStyle(
                             color: Colors.green,
                             fontWeight: FontWeight.bold,
