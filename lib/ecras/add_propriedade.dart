@@ -7,7 +7,9 @@ import '../modelos/propriedade.dart';
 import '../data/bd.dart';
 
 class AddPropertyPage extends StatefulWidget {
-  const AddPropertyPage({super.key});
+  final Propriedade? propriedadeAEditar; 
+
+  const AddPropertyPage({super.key, this.propriedadeAEditar});
 
   @override
   State<AddPropertyPage> createState() => _AddPropertyPageState();
@@ -28,10 +30,34 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
   final List<String> _tipologias = ['T0', 'T1', 'T2', 'T3', 'T4', 'T5+'];
   final List<String> _opcoesSimNao = ['Sim', 'Nao'];
 
-  // Função para abrir câmara ou galeria e converter para texto
+  @override
+  void initState() {
+    super.initState();
+    if (widget.propriedadeAEditar != null) {
+      final p = widget.propriedadeAEditar!;
+      _localizacaoController.text = p.localizacao;
+      _precoController.text = _formatarPrecoInicial(p.preco.toInt().toString());
+      _tipologiaSelecionada = p.tipologia;
+      _garagemSelecionada = p.garagem;
+      _piscinaSelecionada = p.piscina;
+      _imagemEmTextoBase64 = p.imagemBase64;
+    }
+  }
+
+  
+  String _formatarPrecoInicial(String texto) {
+    if (texto.isEmpty) return texto;
+    final int len = texto.length;
+    final StringBuffer sb = StringBuffer();
+    for (int i = 0; i < len; i++) {
+      if (i > 0 && (len - i) % 3 == 0) sb.write(' ');
+      sb.write(texto[i]);
+    }
+    return sb.toString();
+  }
+
   Future<void> _escolherImagem(ImageSource fonte) async {
     final picker = ImagePicker();
-    
     final pickedFile = await picker.pickImage(
       source: fonte, 
       imageQuality: 50,
@@ -40,7 +66,6 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
     );
 
     if (pickedFile != null) {
-      // Lê o ficheiro e converte para Base64
       final bytes = await pickedFile.readAsBytes();
       final base64String = base64Encode(bytes);
 
@@ -101,11 +126,17 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
       localizacao: localizacao,
       garagem: garagem,
       piscina: piscina,
-      imagemBase64: _imagemEmTextoBase64, // Passamos o texto da imagem!
+      imagemBase64: _imagemEmTextoBase64,
     );
 
     try {
-      await _firebaseService.guardarPropriedade(novaPropriedade);
+      if (widget.propriedadeAEditar != null) {
+        
+        await _firebaseService.atualizarPropriedade(widget.propriedadeAEditar!.id!, novaPropriedade);
+      } else {
+        
+        await _firebaseService.guardarPropriedade(novaPropriedade);
+      }
       if (!mounted) return;
       Navigator.pop(context, true);
     } catch (e) {
@@ -125,8 +156,27 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
 
   @override
   Widget build(BuildContext context) {
+    
+    Widget widgetImagem = const Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.add_a_photo, size: 50, color: Colors.grey),
+        SizedBox(height: 8),
+        Text('Adicionar Fotografia', style: TextStyle(color: Colors.grey)),
+      ],
+    );
+
+    if (_imagemSelecionada != null) {
+      widgetImagem = Image.file(_imagemSelecionada!, fit: BoxFit.cover);
+    } else if (_imagemEmTextoBase64 != null && _imagemEmTextoBase64!.isNotEmpty) {
+      widgetImagem = Image.memory(base64Decode(_imagemEmTextoBase64!), fit: BoxFit.cover);
+    }
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Adicionar Novo Imóvel')),
+      appBar: AppBar(
+        
+        title: Text(widget.propriedadeAEditar != null ? 'Editar Imóvel' : 'Adicionar Novo Imóvel')
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -141,19 +191,10 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.grey),
                 ),
-                child: _imagemSelecionada != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.file(_imagemSelecionada!, fit: BoxFit.cover),
-                      )
-                    : const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.add_a_photo, size: 50, color: Colors.grey),
-                          SizedBox(height: 8),
-                          Text('Adicionar Fotografia', style: TextStyle(color: Colors.grey)),
-                        ],
-                      ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: widgetImagem,
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -202,7 +243,11 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
             ElevatedButton(
               onPressed: _guardarPropriedade,
               style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 50)),
-              child: const Text('Guardar Imóvel', style: TextStyle(fontSize: 16)),
+              
+              child: Text(
+                widget.propriedadeAEditar != null ? 'Atualizar Imóvel' : 'Guardar Imóvel', 
+                style: const TextStyle(fontSize: 16)
+              ),
             ),
           ],
         ),

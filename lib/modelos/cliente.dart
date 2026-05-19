@@ -1,4 +1,5 @@
 class Cliente {
+  final String? id; 
   final String nome;
   final String tipologia;
   final double orcamentoMaximo;
@@ -7,8 +8,8 @@ class Cliente {
   final String garagem;
   final String piscina;
 
-
   Cliente({
+    this.id, 
     required this.nome,
     required this.tipologia,
     required this.orcamentoMaximo,
@@ -18,8 +19,9 @@ class Cliente {
     required this.piscina,
   });
 
-Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap() {
     return {
+      
       'nome': nome,
       'tipologia': tipologia,
       'orcamento_maximo': orcamentoMaximo,
@@ -32,6 +34,7 @@ Map<String, dynamic> toMap() {
 
   factory Cliente.fromMap(Map<String, dynamic> map) {
     return Cliente(
+      id: map['id'], 
       nome: map['nome'] ?? '',
       tipologia: map['tipologia'] ?? '',
       orcamentoMaximo: (map['orcamento_maximo'] ?? 0.0).toDouble(),

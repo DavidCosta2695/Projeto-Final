@@ -1,12 +1,14 @@
 class Propriedade {
+  final String? id; 
   final double preco;
   final String tipologia;
   final String localizacao;
   final String garagem;
   final String piscina;
-  final String? imagemBase64; 
+  final String? imagemBase64;
 
   Propriedade({
+    this.id, 
     required this.preco,
     required this.tipologia,
     required this.localizacao,
@@ -28,11 +30,12 @@ class Propriedade {
 
   factory Propriedade.fromMap(Map<String, dynamic> map) {
     return Propriedade(
+      id: map['id'], 
       preco: (map['preco'] ?? 0.0).toDouble(),
       tipologia: map['tipologia'] ?? '',
       localizacao: map['localizacao'] ?? '',
-      garagem: map['garagem'] ?? '',
-      piscina: map['piscina'] ?? '',
+      garagem: map['garagem'] ?? 'Nao',
+      piscina: map['piscina'] ?? 'Nao',
       imagemBase64: map['imagemBase64'],
     );
   }
