@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,8 +18,9 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
   
   User? utilizadorAtual;
   
-  // Variáveis da Base de Dados (Firestore)
+  
   String _nomePersonalizado = '';
+  String _telemovelPersonalizado = ''; 
   String? _imagemBase64;
   bool _aCarregar = true; 
 
@@ -31,7 +31,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
     _carregarPerfilDaNuvem();
   }
 
-  // Vai ao Firestore buscar os dados extra
+  
   Future<void> _carregarPerfilDaNuvem() async {
     if (utilizadorAtual != null) {
       final dados = await _firebaseService.obterPerfilUtilizador(utilizadorAtual!.uid);
@@ -39,6 +39,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
       if (dados != null) {
         setState(() {
           _nomePersonalizado = dados['nome'] ?? '';
+          _telemovelPersonalizado = dados['telemovel'] ?? ''; 
           _imagemBase64 = dados['imagemBase64'];
         });
       }
@@ -46,7 +47,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
     setState(() => _aCarregar = false);
   }
 
-  // --- Função para alterar o NOME ---
+  
   Future<void> _alterarNome() async {
     final controlador = TextEditingController(text: _nomePersonalizado);
     
@@ -83,6 +84,53 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
       await _firebaseService.atualizarPerfilUtilizador(
         utilizadorAtual!.uid, 
         _nomePersonalizado, 
+        _telemovelPersonalizado, 
+        _imagemBase64
+      );
+      
+      setState(() => _aCarregar = false);
+    }
+  }
+
+  
+  Future<void> _alterarTelemovel() async {
+    final controlador = TextEditingController(text: _telemovelPersonalizado);
+    
+    final novoTelemovel = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Alterar Telemóvel'),
+        content: TextField(
+          controller: controlador,
+          keyboardType: TextInputType.phone, 
+          decoration: const InputDecoration(
+            labelText: 'Número de telemóvel',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, controlador.text),
+            child: const Text('Guardar'),
+          ),
+        ],
+      ),
+    );
+
+    if (novoTelemovel != null && utilizadorAtual != null) {
+      setState(() {
+        _telemovelPersonalizado = novoTelemovel.trim();
+        _aCarregar = true;
+      });
+      
+      await _firebaseService.atualizarPerfilUtilizador(
+        utilizadorAtual!.uid, 
+        _nomePersonalizado, 
+        _telemovelPersonalizado, 
         _imagemBase64
       );
       
@@ -113,6 +161,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
       await _firebaseService.atualizarPerfilUtilizador(
         utilizadorAtual!.uid, 
         _nomePersonalizado, 
+        _telemovelPersonalizado,
         _imagemBase64
       );
 
@@ -142,7 +191,6 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
                 _escolherImagem(ImageSource.camera);
               },
             ),
-            
             if (_imagemBase64 != null)
               ListTile(
                 leading: const Icon(Icons.delete, color: Colors.red),
@@ -156,6 +204,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
                   await _firebaseService.atualizarPerfilUtilizador(
                     utilizadorAtual!.uid, 
                     _nomePersonalizado, 
+                    _telemovelPersonalizado,
                     null
                   );
                   setState(() => _aCarregar = false);
@@ -191,73 +240,91 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
                   'Perfil da Conta',
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
                 
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
+                
+                Center(
+                  child: GestureDetector(
+                    onTap: _mostrarMenuDeImagem,
+                    child: Stack(
+                      alignment: Alignment.bottomRight,
                       children: [
-                       
-                        GestureDetector(
-                          onTap: _mostrarMenuDeImagem,
-                          child: Stack(
-                            alignment: Alignment.bottomRight,
-                            children: [
-                              CircleAvatar(
-                                radius: 40,
-                                backgroundColor: const Color(0xFFC8A46B),
-                                backgroundImage: imagemDoPerfil,
-                                child: imagemDoPerfil == null 
-                                    ? const Icon(Icons.person, color: Colors.white, size: 40) 
-                                    : null,
-                              ),
-                              
-                              Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: const BoxDecoration(
-                                  color: Colors.black87,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(Icons.camera_alt, size: 16, color: Colors.white),
-                              ),
-                            ],
-                          ),
+                        CircleAvatar(
+                          radius: 55, 
+                          backgroundColor: const Color(0xFFC8A46B),
+                          backgroundImage: imagemDoPerfil,
+                          child: imagemDoPerfil == null 
+                              ? const Icon(Icons.person, color: Colors.white, size: 55) 
+                              : null,
                         ),
-                        const SizedBox(width: 16),
-                        
-                        
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _nomePersonalizado.isEmpty 
-                                    ? (utilizadorAtual?.displayName ?? 'Sem Nome Definido') 
-                                    : _nomePersonalizado,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                utilizadorAtual?.email ?? 'Email não encontrado',
-                                style: const TextStyle(color: Colors.grey),
-                              ),
-                            ],
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: const BoxDecoration(
+                            color: Colors.black87,
+                            shape: BoxShape.circle,
                           ),
-                        ),
-                        
-                        
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Color(0xFFC8A46B)),
-                          onPressed: _alterarNome,
+                          child: const Icon(Icons.camera_alt, size: 18, color: Colors.white),
                         ),
                       ],
                     ),
                   ),
                 ),
+                const SizedBox(height: 32),
+                
+               
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: Column(
+                    children: [
+                      
+                      ListTile(
+                        leading: const Icon(Icons.person, color: Color(0xFFC8A46B)),
+                        title: const Text('Nome', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                        subtitle: Text(
+                          _nomePersonalizado.isEmpty 
+                              ? (utilizadorAtual?.displayName ?? 'Sem Nome Definido') 
+                              : _nomePersonalizado,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                        onTap: _alterarNome, 
+                      ),
+                      const Divider(height: 1, indent: 56), 
+                      
+                      
+                      ListTile(
+                        leading: const Icon(Icons.email, color: Color(0xFFC8A46B)),
+                        title: const Text('Email', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                        subtitle: Text(
+                          utilizadorAtual?.email ?? 'Email não encontrado',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                      const Divider(height: 1, indent: 56),
+                      
+                      
+                      ListTile(
+                        leading: const Icon(Icons.phone, color: Color(0xFFC8A46B)),
+                        title: const Text('Telemóvel', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                        subtitle: Text(
+                          _telemovelPersonalizado.isEmpty ? 'Adicionar telemóvel...' : _telemovelPersonalizado,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold, 
+                            fontSize: 16,
+                            color: _telemovelPersonalizado.isEmpty ? Colors.grey : null
+                          ),
+                        ),
+                        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                        onTap: _alterarTelemovel, 
+                      ),
+                    ],
+                  ),
+                ),
                 
                 const Spacer(),
 
+                
                 SizedBox(
                   width: double.infinity,
                   height: 50,

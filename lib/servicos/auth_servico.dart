@@ -10,10 +10,14 @@ class AuthService {
       email: email,
       password: password,
     );
+    
+    
+    await userCredential.user?.sendEmailVerification();
+    
     return userCredential.user;
   }
 
-  // --- NOVO: INICIAR SESSÃO COM EMAIL ---
+ 
   Future<User?> loginComEmail(String email, String password) async {
     final userCredential = await _auth.signInWithEmailAndPassword(
       email: email,
@@ -40,7 +44,7 @@ class AuthService {
     return userCredential.user;
   }
 
-  //  
+  
   Future<void> logout() async {
     await GoogleSignIn().signOut();
     await _auth.signOut();

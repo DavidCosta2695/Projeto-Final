@@ -1,9 +1,10 @@
   import 'package:flutter/material.dart';
   import '../servicos/auth_servico.dart';
+  import 'package:firebase_auth/firebase_auth.dart';
 
   class LoginPage extends StatefulWidget {
     const LoginPage({super.key});
-
+  
     @override
     State<LoginPage> createState() => _LoginPageState();
   }
@@ -21,7 +22,7 @@
     }
 
     
-    void _loginComEmail() async {
+void _loginComEmail() async {
       if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
         _mostrarAviso('Preenche o email e a password.');
         return;
@@ -34,6 +35,19 @@
           _emailController.text.trim(), 
           _passwordController.text.trim()
         );
+        
+        
+        User? utilizador = FirebaseAuth.instance.currentUser;
+        
+        if (utilizador != null && !utilizador.emailVerified) {
+          
+          await _authService.logout(); 
+          _mostrarAviso('Por favor, verifica a tua caixa de email (e o spam) para ativar a conta!');
+          setState(() => _isLoading = false);
+          return; 
+        }
+        
+
         if (!mounted) return;
         Navigator.pushReplacementNamed(context, '/home');
       } catch (e) {
@@ -43,7 +57,6 @@
       }
     }
 
-    
     void _criarConta() async {
       if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
         _mostrarAviso('Preenche o email e a password para criar conta.');
@@ -57,15 +70,22 @@
           _emailController.text.trim(), 
           _passwordController.text.trim()
         );
-        if (!mounted) return;
-        Navigator.pushReplacementNamed(context, '/home');
+        
+
+        await _authService.logout();
+        
+        _mostrarAviso('Conta criada! Enviámos um link de confirmação para o teu email.');
+        
+        
+        _passwordController.clear();
+        
+        
       } catch (e) {
         _mostrarAviso('Erro ao criar conta: Pode já existir ou a password ser fraca.');
       } finally {
         if (mounted) setState(() => _isLoading = false);
       }
     }
-
     
     void _loginComGoogle() async {
       setState(() => _isLoading = true);
@@ -110,7 +130,7 @@
 
                 TextField(
                   controller: _passwordController,
-                  obscureText: true, // Esconde a password
+                  obscureText: true, 
                   decoration: const InputDecoration(
                     labelText: 'Password',
                     border: OutlineInputBorder(),

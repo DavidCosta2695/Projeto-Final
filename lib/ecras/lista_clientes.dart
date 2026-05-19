@@ -23,7 +23,154 @@ class ClientListPage extends StatefulWidget {
 class _ClientListPageState extends State<ClientListPage> {
   final FirebaseService _firebaseService = FirebaseService();
 
-  
+  String? _filtroTipologia;
+  String? _filtroGaragem;
+  String? _filtroPiscina;
+  RangeValues _valoresOrcamento = const RangeValues(0, 1000000); // De 0€ a 1 Milhão de orçamento
+
+  final List<String> _tipologias = ['Todas', 'T0', 'T1', 'T2', 'T3', 'T4', 'T5+'];
+  final List<String> _opcoesSimNao = ['Indiferente', 'Sim', 'Nao'];
+
+
+  void _abrirFiltros() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Filtros de Clientes', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                      TextButton(
+                        onPressed: () {
+                          
+                          setModalState(() {
+                            _filtroTipologia = null;
+                            _filtroGaragem = null;
+                            _filtroPiscina = null;
+                            _valoresOrcamento = const RangeValues(0, 1000000);
+                          });
+                          setState(() {}); // Atualiza a lista em segundo plano
+                        },
+                        child: const Text('Limpar', style: TextStyle(color: Colors.red)),
+                      )
+                    ],
+                  ),
+                  const Divider(),
+                  
+                  
+                  const SizedBox(height: 16),
+                  Text(
+                    'Orçamento do Cliente: ${formatter.format(_valoresOrcamento.start)} - ${formatter.format(_valoresOrcamento.end)}', 
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
+                  ),
+                  RangeSlider(
+                    values: _valoresOrcamento,
+                    min: 0,
+                    max: 1000000,
+                    divisions: 100, 
+                    activeColor: const Color(0xFFC8A46B),
+                    labels: RangeLabels(
+                      formatter.format(_valoresOrcamento.start), 
+                      formatter.format(_valoresOrcamento.end)
+                    ),
+                    onChanged: (RangeValues novosValores) {
+                      setModalState(() => _valoresOrcamento = novosValores);
+                    },
+                  ),
+
+                  
+                  const SizedBox(height: 16),
+                  const Text('Tipologia Desejada', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8.0,
+                    children: _tipologias.map((tipo) {
+                      final isSelected = _filtroTipologia == tipo || (tipo == 'Todas' && _filtroTipologia == null);
+                      return ChoiceChip(
+                        label: Text(tipo),
+                        selected: isSelected,
+                        selectedColor: const Color(0xFFC8A46B).withOpacity(0.3),
+                        onSelected: (bool selected) {
+                          setModalState(() => _filtroTipologia = (tipo == 'Todas' ? null : tipo));
+                        },
+                      );
+                    }).toList(),
+                  ),
+
+                  
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Garagem', style: TextStyle(fontWeight: FontWeight.bold)),
+                            DropdownButton<String>(
+                              isExpanded: true,
+                              value: _filtroGaragem ?? 'Indiferente',
+                              items: _opcoesSimNao.map((o) => DropdownMenuItem(value: o, child: Text(o))).toList(),
+                              onChanged: (val) => setModalState(() => _filtroGaragem = val == 'Indiferente' ? null : val),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Piscina', style: TextStyle(fontWeight: FontWeight.bold)),
+                            DropdownButton<String>(
+                              isExpanded: true,
+                              value: _filtroPiscina ?? 'Indiferente',
+                              items: _opcoesSimNao.map((o) => DropdownMenuItem(value: o, child: Text(o))).toList(),
+                              onChanged: (val) => setModalState(() => _filtroPiscina = val == 'Indiferente' ? null : val),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFC8A46B),
+                        foregroundColor: Colors.black,
+                      ),
+                      onPressed: () {
+                        setState(() {});
+                        Navigator.pop(context); 
+                      },
+                      child: const Text('Aplicar Filtros', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ),
+                  )
+                ],
+              ),
+            );
+          }
+        );
+      }
+    );
+  }
+
+
   void _confirmarEliminacao(BuildContext context, Cliente cliente) async {
     final confirmar = await showDialog<bool>(
       context: context,
@@ -58,7 +205,15 @@ class _ClientListPageState extends State<ClientListPage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            tooltip: 'Filtrar Clientes',
+            onPressed: _abrirFiltros,
+          ),
+        ],
       ),
+      
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -110,6 +265,7 @@ class _ClientListPageState extends State<ClientListPage> {
           ],
         ),
       ),
+      
       body: StreamBuilder<List<Cliente>>(
         stream: _firebaseService.listarClientes(),
         builder: (context, snapshot) {
@@ -123,14 +279,38 @@ class _ClientListPageState extends State<ClientListPage> {
 
           final clientesDaNuvem = snapshot.data ?? [];
 
-          if (clientesDaNuvem.isEmpty) {
-            return const Center(
+          
+          final clientesFiltrados = clientesDaNuvem.where((client) {
+            
+            if (_filtroTipologia != null && client.tipologia != _filtroTipologia) return false;
+            
+            if (_filtroGaragem != null && client.garagem != _filtroGaragem) return false;
+            
+            if (_filtroPiscina != null && client.piscina != _filtroPiscina) return false;
+           
+            if (client.orcamentoMinimo < _valoresOrcamento.start || client.orcamentoMaximo > _valoresOrcamento.end) return false;
+            
+            return true;
+          }).toList();
+
+         
+          if (clientesFiltrados.isEmpty) {
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.folder_open, size: 80, color: Colors.grey),
-                  SizedBox(height: 16),
-                  Text('Ainda não tens clientes registados.', style: TextStyle(color: Colors.grey, fontSize: 16)),
+                  const Icon(Icons.search_off, size: 80, color: Colors.grey),
+                  const SizedBox(height: 16),
+                  const Text('Nenhum cliente corresponde aos filtros.', style: TextStyle(color: Colors.grey, fontSize: 16)),
+                  TextButton(
+                    onPressed: () => setState(() {
+                      _filtroTipologia = null;
+                      _filtroGaragem = null;
+                      _filtroPiscina = null;
+                      _valoresOrcamento = const RangeValues(0, 1000000);
+                    }),
+                    child: const Text('Limpar Filtros'),
+                  )
                 ],
               ),
             );
@@ -138,10 +318,9 @@ class _ClientListPageState extends State<ClientListPage> {
 
           return ListView.builder(
             padding: const EdgeInsets.all(16.0),
-            itemCount: clientesDaNuvem.length,
+            itemCount: clientesFiltrados.length,
             itemBuilder: (context, index) {
-              final client = clientesDaNuvem[index];
-              
+              final client = clientesFiltrados[index];
               final letraAvatar = client.nome.isNotEmpty ? client.nome[0].toUpperCase() : '?';
 
               return Card(
@@ -190,7 +369,7 @@ class _ClientListPageState extends State<ClientListPage> {
                       ),
                       const SizedBox(height: 16),
                       
-                     
+
                       Wrap(
                         spacing: 8.0,
                         runSpacing: 8.0,
@@ -208,14 +387,14 @@ class _ClientListPageState extends State<ClientListPage> {
                           if (client.garagem != 'Indiferente')
                             Chip(
                               avatar: const Icon(Icons.garage, size: 16),
-                              label: Text(client.garagem),
+                              label: Text('Garagem: ${client.garagem}'),
                               backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                               side: BorderSide.none,
                             ),
                           if (client.piscina != 'Indiferente')
                             Chip(
                               avatar: const Icon(Icons.pool, size: 16),
-                              label: Text(client.piscina),
+                              label: Text('Piscina: ${client.piscina}'),
                               backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                               side: BorderSide.none,
                             ),
@@ -229,7 +408,7 @@ class _ClientListPageState extends State<ClientListPage> {
                         height: 45,
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFC8A46B), 
+                            backgroundColor: const Color(0xFFC8A46B),
                             foregroundColor: Colors.black,
                           ),
                           icon: const Icon(Icons.auto_awesome),

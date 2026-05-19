@@ -92,9 +92,10 @@ class FirebaseService {
       rethrow;
     }
   }
-  Future<void> atualizarPerfilUtilizador(String uid, String nome, String? imagemBase64) async {
+Future<void> atualizarPerfilUtilizador(String uid, String nome, String? telemovel, String? imagemBase64) async {
     await _db.collection('utilizadores').doc(uid).set({
       'nome': nome,
+      'telemovel': telemovel,
       'imagemBase64': imagemBase64,
     }, SetOptions(merge: true)); 
   }
