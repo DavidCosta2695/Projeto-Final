@@ -30,14 +30,7 @@ A aplicação foi construída utilizando as melhores práticas e pacotes do ecos
 * **Media:** `image_picker` para acesso nativo à câmara e galeria de fotos.
 * **UI/UX:** Material Design 3, *RangeSliders*, *ChoiceChips* e navegação fluida por *Drawers*.
 
-
-
-## 🚀 Como Executar o Projeto
-
-1. Certifica-te que tens o [Flutter SDK](https://docs.flutter.dev/get-started/install) instalado na tua máquina.
-2. Clonar este repositório:
-   git clone [https://github.com/DavidCosta2695/Projeto-Final.git]
-
+## 📱 Screenshots
 <table>
   <tr>
     <td><img src="prints/Login.png" width="200" alt="Ecrã de Login"/></td>
@@ -46,3 +39,12 @@ A aplicação foi construída utilizando as melhores práticas e pacotes do ecos
     <td><img src="prints/filtragem.png" width="200" alt="Menu de Filtros"/></td>
   </tr>
 </table>
+
+## 🚀 Como Executar o Projeto
+
+1. Certifica-te que tens o [Flutter SDK](https://docs.flutter.dev/get-started/install) instalado na tua máquina.
+2. Clonar este repositório:
+   ```bash
+   git clone [https://github.com/DavidCosta2695/Projeto-Final.git](https://github.com/DavidCosta2695/Projeto-Final.git)
+
+
