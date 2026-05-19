@@ -40,9 +40,9 @@ A aplicação foi construída utilizando as melhores práticas e pacotes do ecos
 
 <table>
   <tr>
-    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\Login.png" width="200"/></td>
-    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\Dashboard.png" width="200"/></td>
-    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\Clientes.png" width="200"/></td>
-    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\filtragem.png" width="200"/></td>
+    <td><img src="prints/Login.png" width="200" alt="Ecrã de Login"/></td>
+    <td><img src="prints/Dashboard.png" width="200" alt="Ecrã de Dashboard"/></td>
+    <td><img src="prints/Clientes.png" width="200" alt="Lista de Clientes"/></td>
+    <td><img src="prints/filtragem.png" width="200" alt="Menu de Filtros"/></td>
   </tr>
 </table>
