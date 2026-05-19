@@ -19,7 +19,8 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    const corTema = Color(0xFFC8A46B); // O amarelo/ouro da vossa app
+    const corTema = Color(0xFFC8A46B); 
+  
 
     return Scaffold(
       appBar: AppBar(
@@ -46,7 +47,7 @@ class _DashboardPageState extends State<DashboardPage> {
             ListTile(
               leading: const Icon(Icons.dashboard, color: corTema),
               title: const Text('Início / Dashboard'),
-              onTap: () => Navigator.pop(context), // Já está aqui, só fecha
+              onTap: () => Navigator.pop(context), 
             ),
             ListTile(
               leading: const Icon(Icons.people),
@@ -97,11 +98,11 @@ class _DashboardPageState extends State<DashboardPage> {
               final clientes = clientSnapshot.data ?? [];
               final propriedades = propertySnapshot.data ?? [];
 
-              // 1. Cálculos de Totais Básicos
+             
               int totalClientes = clientes.length;
               int totalImoveis = propriedades.length;
 
-              // 2. Cálculo de Clientes por Tipologia
+              
               Map<String, int> contagemClientesTipologia = {for (var t in _tipologiasGlobais) t: 0};
               for (var c in clientes) {
                 if (contagemClientesTipologia.containsKey(c.tipologia)) {
@@ -109,7 +110,6 @@ class _DashboardPageState extends State<DashboardPage> {
                 }
               }
 
-              // 3. Cálculo de Imóveis por Tipologia
               Map<String, int> contagemImoveisTipologia = {for (var t in _tipologiasGlobais) t: 0};
               for (var p in propriedades) {
                 if (contagemImoveisTipologia.containsKey(p.tipologia)) {
