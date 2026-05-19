@@ -30,7 +30,6 @@ A aplicação foi construída utilizando as melhores práticas e pacotes do ecos
 * **Media:** `image_picker` para acesso nativo à câmara e galeria de fotos.
 * **UI/UX:** Material Design 3, *RangeSliders*, *ChoiceChips* e navegação fluida por *Drawers*.
 
-## 📱 Capturas de Ecrã / UX Highlights
 
 
 ## 🚀 Como Executar o Projeto
@@ -41,9 +40,9 @@ A aplicação foi construída utilizando as melhores práticas e pacotes do ecos
 
 <table>
   <tr>
-    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\login.jpg" width="200"/></td>
-    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\Dashboard.jpg" width="200"/></td>
-    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\Clientes.jpg" width="200"/></td>
-    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\Filtragem.jpg" width="200"/></td>
+    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\Login.png" width="200"/></td>
+    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\Dashboard.png" width="200"/></td>
+    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\Clientes.png" width="200"/></td>
+    <td><img src="C:\Users\Luis Santana\Desktop\projeto_final\projeto_Final\prints\filtragem.png" width="200"/></td>
   </tr>
 </table>
